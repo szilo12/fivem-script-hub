@@ -58,15 +58,14 @@ export const Route = createFileRoute("/api/public/license/verify")({
           return json({ valid: false, error: "ip_mismatch", bound_ip: boundIp }, 403);
         }
 
-        await supabaseAdmin
-          .from("licenses")
-          .update({
-            last_check_at: new Date().toISOString(),
-            activations: license.activations + 1,
-            server_ip: boundIp ?? parsed.server_ip ?? null,
-            cfx_id: parsed.cfx_id ?? undefined,
-          })
-          .eq("id", license.id);
+        const patch: { last_check_at: string; activations: number; server_ip: string | null; cfx_id?: string } = {
+          last_check_at: new Date().toISOString(),
+          activations: license.activations + 1,
+          server_ip: boundIp ?? parsed.server_ip ?? null,
+        };
+        if (parsed.cfx_id) patch.cfx_id = parsed.cfx_id;
+
+        await supabaseAdmin.from("licenses").update(patch).eq("id", license.id);
 
         return json({
           valid: true,
