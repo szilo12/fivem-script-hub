@@ -14,6 +14,149 @@ export type Database = {
   }
   public: {
     Tables: {
+      asset_grants: {
+        Row: {
+          asset_name: string | null
+          cfx_id: string | null
+          created_at: string
+          granted_at: string | null
+          id: string
+          license_id: string | null
+          note: string | null
+          product_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          asset_name?: string | null
+          cfx_id?: string | null
+          created_at?: string
+          granted_at?: string | null
+          id?: string
+          license_id?: string | null
+          note?: string | null
+          product_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          asset_name?: string | null
+          cfx_id?: string | null
+          created_at?: string
+          granted_at?: string | null
+          id?: string
+          license_id?: string | null
+          note?: string | null
+          product_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_grants_license_id_fkey"
+            columns: ["license_id"]
+            isOneToOne: true
+            referencedRelation: "licenses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asset_grants_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cfx_accounts: {
+        Row: {
+          cfx_id: string
+          connected_at: string | null
+          created_at: string
+          forum_name: string | null
+          id: string
+          is_seller: boolean
+          status: string
+          updated_at: string
+          user_id: string
+          verification_code: string
+        }
+        Insert: {
+          cfx_id: string
+          connected_at?: string | null
+          created_at?: string
+          forum_name?: string | null
+          id?: string
+          is_seller?: boolean
+          status?: string
+          updated_at?: string
+          user_id: string
+          verification_code?: string
+        }
+        Update: {
+          cfx_id?: string
+          connected_at?: string | null
+          created_at?: string
+          forum_name?: string | null
+          id?: string
+          is_seller?: boolean
+          status?: string
+          updated_at?: string
+          user_id?: string
+          verification_code?: string
+        }
+        Relationships: []
+      }
+      cfx_assets: {
+        Row: {
+          asset_name: string
+          created_at: string
+          display_name: string | null
+          id: string
+          imported_at: string
+          owner_id: string
+          product_id: string | null
+          source: string
+          updated_at: string
+          version: string | null
+        }
+        Insert: {
+          asset_name: string
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          imported_at?: string
+          owner_id: string
+          product_id?: string | null
+          source?: string
+          updated_at?: string
+          version?: string | null
+        }
+        Update: {
+          asset_name?: string
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          imported_at?: string
+          owner_id?: string
+          product_id?: string | null
+          source?: string
+          updated_at?: string
+          version?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cfx_assets_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       licenses: {
         Row: {
           activations: number
