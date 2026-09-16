@@ -78,14 +78,48 @@ export const approveOrder = createServerFn({ method: "POST" })
     if (existing) return { licenseKey: existing.license_key };
 
     const licenseKey = makeLicenseKey();
-    const { error } = await supabaseAdmin.from("licenses").insert({
-      user_id: order.user_id,
-      product_id: order.product_id,
-      order_id: order.id,
-      license_key: licenseKey,
-      cfx_id: order.cfx_id,
-    });
+    const { data: license, error } = await supabaseAdmin
+      .from("licenses")
+      .insert({
+        user_id: order.user_id,
+        product_id: order.product_id,
+        order_id: order.id,
+        license_key: licenseKey,
+        cfx_id: order.cfx_id,
+      })
+      .select("id")
+      .single();
     if (error) throw new Error(error.message);
+
+    // A vásárló CFX azonosítója: a rendelésben megadott, vagy az összekapcsolt fiókból.
+    let cfxId = order.cfx_id;
+    if (!cfxId) {
+      const { data: account } = await supabaseAdmin
+        .from("cfx_accounts")
+        .select("cfx_id")
+        .eq("user_id", order.user_id)
+        .maybeSingle();
+      cfxId = account?.cfx_id ?? null;
+    }
+
+    const { data: product } = await supabaseAdmin
+      .from("products")
+      .select("escrow_asset_name")
+      .eq("id", order.product_id)
+      .maybeSingle();
+
+    await supabaseAdmin.from("asset_grants").upsert(
+      {
+        user_id: order.user_id,
+        license_id: license.id,
+        product_id: order.product_id,
+        cfx_id: cfxId,
+        asset_name: product?.escrow_asset_name ?? null,
+        status: "pending",
+      },
+      { onConflict: "license_id" },
+    );
+
     return { licenseKey };
   });
 
