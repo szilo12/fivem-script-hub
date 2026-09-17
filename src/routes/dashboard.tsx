@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Copy, Download, KeyRound } from "lucide-react";
+import { CfxConnectCard } from "@/components/site/CfxConnectCard";
 
 export const Route = createFileRoute("/dashboard")({
   ssr: false,
@@ -131,6 +132,10 @@ function Dashboard() {
     <main className="mx-auto max-w-6xl px-4 py-12">
       <h1 className="font-display text-3xl font-semibold">Fiókom</h1>
       <p className="mt-2 text-sm text-muted-foreground">{user.email}</p>
+
+      <section className="mt-8">
+        <CfxConnectCard userId={user.id} />
+      </section>
 
       <section className="mt-10">
         <h2 className="font-display text-xl font-semibold">Licenckulcsaim</h2>
