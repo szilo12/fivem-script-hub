@@ -14,6 +14,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Upload } from "lucide-react";
+import { CfxConnectCard } from "@/components/site/CfxConnectCard";
+import { AdminCfxPanel } from "@/components/site/AdminCfxPanel";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -173,6 +175,12 @@ function Admin() {
   return (
     <main className="mx-auto max-w-6xl px-4 py-12">
       <h1 className="font-display text-3xl font-semibold">Admin</h1>
+
+      <section className="mt-8">
+        <CfxConnectCard userId={user.id} seller />
+      </section>
+
+      <AdminCfxPanel products={(products.data ?? []).map((p) => ({ id: p.id, name: p.name }))} />
 
       <section className="mt-10">
         <h2 className="font-display text-xl font-semibold">Megrendelések</h2>

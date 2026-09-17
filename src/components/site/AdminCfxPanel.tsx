@@ -24,7 +24,7 @@ type GrantRow = {
   asset_name: string | null;
   created_at: string;
   products: { name: string } | null;
-  profiles: { email: string | null } | null;
+  user_id: string;
 };
 
 export function AdminCfxPanel({ products }: { products: { id: string; name: string }[] }) {
@@ -51,7 +51,7 @@ export function AdminCfxPanel({ products }: { products: { id: string; name: stri
     queryFn: async () => {
       const { data, error } = await supabase
         .from("asset_grants")
-        .select("id, status, cfx_id, asset_name, created_at, products(name), profiles:user_id(email)")
+        .select("id, status, cfx_id, asset_name, created_at, user_id, products(name)")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data as unknown as GrantRow[];
@@ -153,7 +153,7 @@ export function AdminCfxPanel({ products }: { products: { id: string; name: stri
                 <div>
                   <p className="font-medium">{grant.products?.name ?? "Script"}</p>
                   <p className="text-xs text-muted-foreground">
-                    {grant.profiles?.email ?? "vásárló"} · asset: {grant.asset_name ?? "—"} · CFX:{" "}
+                    {new Date(grant.created_at).toLocaleString("hu-HU")} · asset: {grant.asset_name ?? "—"} · CFX:{" "}
                     {grant.cfx_id ?? "nincs megadva"}
                   </p>
                 </div>
